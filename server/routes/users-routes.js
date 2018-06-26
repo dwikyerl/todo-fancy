@@ -1,12 +1,12 @@
 const router = require('express').Router();
-const { usersControllers, authControllers } = require('./../controllers');
+const { usersControllers } = require('./../controllers');
 const { catchErrors } = require('./../handlers/errorHandlers');
+const usersMiddlewares = require('./../middlewares/users-middlewares');
 
 router.post(
   '/signup',
-  usersControllers.validateRegister,
-  catchErrors(usersControllers.signUp),
-  catchErrors(authControllers.signin)
+  usersMiddlewares.validateRegister,
+  catchErrors(usersControllers.signUp)
 );
 
 module.exports = router;
