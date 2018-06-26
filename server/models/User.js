@@ -26,10 +26,19 @@ userSchema.methods.matchPassword = async function(passwordString) {
   return match;
 };
 
+userSchema.statics.isValidUser = function(username) {
+  const criteria = (!username.includes('@')) ? { username: username } : { email: username };
+  console.log(criteria);
+  return this.findOne(criteria);
+}
+
 userSchema.pre('save', async function(next) {
-  const user = this;
-  const hash = await bcrypt.hash(user.password, 10);
-  user.password = hash;
+  if (this.password) {
+    const user = this;
+    const hash = await bcrypt.hash(user.password, 10);
+    user.password = hash;
+  }
+
   next();
 });
 
