@@ -8,19 +8,31 @@
         <span class="is-size-4">Fancy Todo</span>
       </router-link>
 
-      <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+      <a @click="isBurgerActive = !isBurgerActive" v-if="isLoggedIn"
+        role="button" class="navbar-burger" :class="{ 'is-active': isBurgerActive}"
+        aria-label="menu" aria-expanded="false"
+      >
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
       </a>
     </div>
 
-    <div class="navbar-menu">
+    <div class="navbar-menu" v-if="isLoggedIn" :class="{ 'is-active': isBurgerActive}">
       <div class="navbar-end">
-        <div class="navbar-item">
-          <button class="button is-primary">
-            Sign In
-          </button>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <div class="navbar-link">
+            {{ username }}
+          </div>
+
+          <div class="navbar-dropdown is-right">
+            <a @click.prevent="submitSignOut" class="navbar-item">
+              <div>
+                <b-icon icon="logout" size="is-small"></b-icon>
+                <span>Sign Out</span>
+              </div>
+            </a>
+          </div>
         </div>
       </div>
     </div>
@@ -28,8 +40,25 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex';
+
 export default {
   name: 'AppHeader',
+  data() {
+    return {
+      isBurgerActive: false,
+    };
+  },
+  computed: {
+    ...mapGetters(['isLoggedIn', 'username', 'email']),
+  },
+  methods: {
+    ...mapActions(['signOut']),
+    submitSignOut() {
+      this.isBurgerActive = false;
+      this.signOut();
+    },
+  },
 };
 </script>
 

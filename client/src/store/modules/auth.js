@@ -4,6 +4,7 @@ import firebase from 'firebase/app';
 import axios from 'axios';
 import 'firebase/auth';
 import firebaseApp from './../../firebase';
+import router from './../../router';
 
 const state = {
   token: window.localStorage.getItem('token') || null,
@@ -20,24 +21,29 @@ const mutations = {
 };
 
 const actions = {
-  logout({ commit }) {
+  signOut({ commit }) {
     commit('SET_TOKEN', null);
     window.localStorage.removeItem('token');
+    router.push({ name: 'signin' });
   },
-  async signIn({ commit }, user) {
+  async signIn({ commit, dispatch }, user) {
     try {
       const { data } = await axios.post('http://localhost:3000/api/signin', user);
       commit('SET_TOKEN', data.token);
       window.localStorage.setItem('token', data.token);
+      dispatch('getUserInfo', null, { root: true });
+      router.push({ name: 'dashboard' });
     } catch (e) {
       console.log(e.response);
     }
   },
-  async fbSignin({ commit }, accessToken) {
+  async fbSignin({ commit, dispatch }, accessToken) {
     try {
       const { data } = await axios.post('http://localhost:3000/api/fbSignin', { accessToken });
       commit('SET_TOKEN', data.token);
       window.localStorage.setItem('token', data.token);
+      dispatch('getUserInfo', null, { root: true });
+      router.push({ name: 'dashboard' });
     } catch (e) {
       console.log(e.response);
     }
