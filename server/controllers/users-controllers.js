@@ -11,3 +11,15 @@ exports.signUp = async (req, res) => {
   
   res.status(200).json({ message: 'User created successfully' })
 };
+
+exports.userInfo = async (req, res) => {
+  const user = {
+    username: req.user.username,
+    email: req.user.username,
+  }
+
+  res.status(200).json({ 
+    message: 'User info retrieved successfully', 
+    user 
+  });
+}

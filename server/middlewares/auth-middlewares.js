@@ -17,7 +17,7 @@ exports.verifyToken = (req, res, next) => {
 };
 
 exports.authorizeUser = async (req, res, next) => {
-  const user = await verifyToken(req.token, process.env.SECRET_KEY);
+  const user = await jwt.verify(req.token, process.env.SECRET_KEY);
 
   if (!user) res.status(400).json({ message: 'Invalid Token' });
   
