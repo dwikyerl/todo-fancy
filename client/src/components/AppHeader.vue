@@ -20,6 +20,13 @@
 
     <div class="navbar-menu" v-if="isLoggedIn" :class="{ 'is-active': isBurgerActive}">
       <div class="navbar-end">
+        <div class="navbar-item">
+          <button @click="openAddModal" class="button is-primary">
+            <b-icon icon="library-plus"></b-icon>
+            <span>Add Todo</span>
+          </button>
+        </div>
+        <hr class="navbar-divider">
         <div class="navbar-item has-dropdown is-hoverable">
           <div class="navbar-link">
             {{ username }}
@@ -53,11 +60,14 @@ export default {
     ...mapGetters(['isLoggedIn', 'username', 'email']),
   },
   methods: {
-    ...mapActions(['signOut']),
+    ...mapActions(['signOut', 'getUserInfo', 'openAddModal']),
     submitSignOut() {
       this.isBurgerActive = false;
       this.signOut();
     },
+  },
+  created() {
+    this.getUserInfo();
   },
 };
 </script>

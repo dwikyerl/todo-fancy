@@ -31,7 +31,7 @@ const actions = {
       const { data } = await axios.post('http://localhost:3000/api/signin', user);
       commit('SET_TOKEN', data.token);
       window.localStorage.setItem('token', data.token);
-      dispatch('getUserInfo', null, { root: true });
+      await dispatch('getUserInfo', null, { root: true });
       router.push({ name: 'dashboard' });
     } catch (e) {
       console.log(e.response);
@@ -42,7 +42,7 @@ const actions = {
       const { data } = await axios.post('http://localhost:3000/api/fbSignin', { accessToken });
       commit('SET_TOKEN', data.token);
       window.localStorage.setItem('token', data.token);
-      dispatch('getUserInfo', null, { root: true });
+      await dispatch('getUserInfo', null, { root: true });
       router.push({ name: 'dashboard' });
     } catch (e) {
       console.log(e.response);

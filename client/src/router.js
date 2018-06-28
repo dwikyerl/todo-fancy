@@ -5,6 +5,8 @@ import Dashboard from './views/Dashboard.vue';
 import AuthSignin from './components/auth/AuthSignin.vue';
 import AuthSignup from './components/auth/AuthSignup.vue';
 
+import store from './store/index';
+
 Vue.use(Router);
 
 export default new Router({
@@ -13,6 +15,13 @@ export default new Router({
     {
       path: '/',
       component: Home,
+      beforeEnter(to, from, next) {
+        if (!store.state.auth.token) {
+          next();
+        } else {
+          next({ name: 'dashboard' });
+        }
+      },
       children: [
         {
           path: '',
@@ -30,6 +39,13 @@ export default new Router({
       path: '/dashboard',
       name: 'dashboard',
       component: Dashboard,
+      beforeEnter(to, from, next) {
+        if (store.state.auth.token) {
+          next();
+        } else {
+          next({ name: 'signin' });
+        }
+      },
     },
   ],
   linkExactActiveClass: 'is-active',

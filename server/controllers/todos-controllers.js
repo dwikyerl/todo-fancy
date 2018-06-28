@@ -4,7 +4,10 @@ exports.createTodo = async (req, res) => {
   const inputData = {
     content: req.body.content,
     author: req.user.id,
+    deadline: req.body.deadline
   };
+
+  console.log(inputData);
 
   const todo = await Todo.create(inputData);
 
@@ -38,7 +41,7 @@ exports.updateTodo = async (req, res) => {
   const updateData = {};
   const { content, completed } = req.body;
   if (content) updateData.content = content;
-  if (completed) updateData.completed = completed;
+  if (completed !== 'undefined') updateData.completed = completed;
 
   const todo = await Todo.findOneAndUpdate({ _id: todoId, author: req.user.id }, updateData, { new: true });
 
@@ -51,9 +54,10 @@ exports.updateTodo = async (req, res) => {
 exports.deleteTodo = async (req, res) => {
   const { todoId } = req.params;
 
-  await Todo.findOneAndRemove({ _id: todoId, author: req.user.id });
+  const deletedTodo = await Todo.findOneAndRemove({ _id: todoId, author: req.user.id });
 
   res.status(200).json({
     message: 'Todo deleted successfully',
+    deletedTodo
   });
 };
