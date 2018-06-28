@@ -7,8 +7,6 @@ exports.createTodo = async (req, res) => {
     deadline: req.body.deadline
   };
 
-  console.log(inputData);
-
   const todo = await Todo.create(inputData);
 
   res.status(201).json({
@@ -39,9 +37,10 @@ exports.getTodoById = async (req, res) => {
 exports.updateTodo = async (req, res) => {
   const { todoId } = req.params;
   const updateData = {};
-  const { content, completed } = req.body;
+  const { content, completed, deadline } = req.body;
   if (content) updateData.content = content;
   if (completed !== 'undefined') updateData.completed = completed;
+  if (deadline) updateData.deadline = deadline;
 
   const todo = await Todo.findOneAndUpdate({ _id: todoId, author: req.user.id }, updateData, { new: true });
 

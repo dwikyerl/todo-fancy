@@ -1,5 +1,6 @@
 /* eslint no-shadow: ["error", { "allow": ["state"] }] */
 /* eslint-disable no-param-reassign */
+/* eslint-disable no-underscore-dangle */
 import firebase from 'firebase/app';
 import axios from 'axios';
 import 'firebase/auth';
@@ -23,6 +24,8 @@ const mutations = {
 const actions = {
   signOut({ commit }) {
     commit('SET_TOKEN', null);
+    commit('RESET_USER_STATE', null, { root: true });
+    commit('RESET_TODO_STATE', null, { root: true });
     window.localStorage.removeItem('token');
     router.push({ name: 'signin' });
   },
@@ -34,6 +37,11 @@ const actions = {
       await dispatch('getUserInfo', null, { root: true });
       router.push({ name: 'dashboard' });
     } catch (e) {
+      this._vm.$toast.open({
+        duration: 3000,
+        message: e.response.data.message,
+        type: 'is-danger',
+      });
       console.log(e.response);
     }
   },

@@ -2,19 +2,23 @@
   <div id="app">
     <AppHeader></AppHeader>
     <router-view class=""></router-view>
-    <TodoNewModal></TodoNewModal>
+    <todo-form-modal v-if="isTodoModalOpened"></todo-form-modal>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import AppHeader from './components/AppHeader.vue';
-import TodoNewModal from './components/todo/TodoNewModal.vue';
+import TodoFormModal from './components/todo/TodoFormModal.vue';
 
 export default {
   name: 'App',
   components: {
     AppHeader,
-    TodoNewModal,
+    TodoFormModal,
+  },
+  computed: {
+    ...mapGetters(['isTodoModalOpened']),
   },
 };
 </script>

@@ -1,10 +1,10 @@
 <template>
-  <div class="modal" :class="{'is-active': isAddModalOpened}">
-    <div class="modal-background" @click="closeAddModal"></div>
+  <div class="modal" :class="{'is-active': isTodoModalOpened}">
+    <div class="modal-background" @click="closeTodoModal"></div>
     <div class="modal-card">
       <header class="modal-card-head">
-        <p class="modal-card-title">Add Todo</p>
-        <button class="delete" aria-label="close" @click="closeAddModal"></button>
+        <p class="modal-card-title">{{ currentTodo ? 'Edit' : 'Add'}} Todo</p>
+        <button class="delete" aria-label="close" @click="closeTodoModal"></button>
       </header>
       <section class="modal-card-body">
         <form @submit.prevent="submitTodo">
@@ -15,7 +15,7 @@
               <div class="control">
                 <input
                 class="input is-large"
-                type="text" value=""
+                type="text"
                 placeholder="Todo Content"
                 v-model="content"
                 required>
@@ -41,26 +41,28 @@
           @click.prevent="submitTodo"
           class="button is-success"
           type="button"
-        >Add Todo</button>
-        <button class="button" type="cancel" @click="closeAddModal">Cancel</button>
+        >{{ currentTodo ? 'Edit' : 'Add'}} Todo</button>
+        <button class="button" type="cancel" @click="closeTodoModal">Cancel</button>
       </footer>
     </div>
   </div>
 </template>
 
 <script>
+/* eslint-disable no-underscore-dangle */
+
 import { mapActions, mapGetters } from 'vuex';
 
 export default {
-  name: 'TodoNewModal',
+  name: 'TodoFormModal',
   data() {
     return {
-      content: this.todo ? this.todo.content : '',
+      content: '',
       date: new Date(),
     };
   },
   computed: {
-    ...mapGetters(['isAddModalOpened']),
+    ...mapGetters(['isTodoModalOpened', 'currentTodo']),
     yesterdayDate() {
       const yesterday = new Date();
       yesterday.setDate(yesterday.getDate() - 1);
@@ -68,16 +70,28 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['closeAddModal', 'addNewTodo']),
+    ...mapActions(['closeTodoModal', 'addNewTodo', 'updateTodo']),
     submitTodo() {
-      this.addNewTodo({
+      const todoData = {
+        id: this.currentTodo._id,
         content: this.content,
         deadline: this.date,
-      });
+      };
+      if (this.currentTodo) {
+        this.updateTodo(todoData);
+      } else {
+        this.addNewTodo(todoData);
+      }
       this.content = '';
       this.date = new Date();
-      this.closeAddModal();
+      this.closeTodoModal();
     },
+  },
+  created() {
+    if (this.currentTodo) {
+      this.content = this.currentTodo.content;
+      this.date = new Date(this.currentTodo.deadline);
+    }
   },
 };
 </script>

@@ -9,7 +9,16 @@
                 :class="{'is-completed': todo.completed }"
               >{{ todo.content }}</span>
             </span>
-            <span class="subtitle is-size-6">Deadline {{ relativeDeadlineDate }}</span>
+            <span
+              v-if="!todo.completed"
+              class="subtitle is-size-6">
+              Deadline {{ relativeDeadlineDate }}
+            </span>
+            <span
+              v-else
+              class="subtitle is-size-6">
+              Completed
+            </span>
         </p>
         <a class="card-header-icon">
             <b-icon
@@ -32,7 +41,7 @@
             ></b-icon>
             {{ todo.completed ? 'Uncomplete' : 'Complete' }}
           </a>
-          <a class="card-footer-item">
+          <a @click.prevent="() => editTodo(todo)" class="card-footer-item">
             <b-icon icon="pencil"></b-icon>
             Edit
           </a>
@@ -62,17 +71,21 @@ export default {
       return moment(this.todo.deadline).format('dddd, MMMM Do YYYY');
     },
     relativeDeadlineDate() {
-      return moment(this.todo.deadline).fromNow();
+      return moment(this.todo.deadline).endOf('day').fromNow();
     },
   },
   methods: {
-    ...mapActions(['deleteTodo', 'completeTodo']),
+    ...mapActions(['deleteTodo', 'completeTodo', 'setCurrentTodo', 'openTodoModal']),
     submitCompleteTodo() {
       const todoData = {
         todoId: this.todo._id,
         completed: !this.todo.completed,
       };
       this.completeTodo(todoData);
+    },
+    editTodo(todo) {
+      this.setCurrentTodo(todo);
+      this.openTodoModal();
     },
   },
 };

@@ -6,14 +6,14 @@
       </div>
 
       <div class="field">
-        <div v-if="todos.length > 0" class="columns vertical">
+        <div v-if="todos && todos.length > 0" class="columns vertical">
           <div class="column" v-for="todo in todos" :key="todo._id">
             <todo-item :todo="todo"></todo-item>
           </div>
         </div>
         <div class="section has-text-centered" v-else>
           <span class="is-size-5">
-            You have no task. Create one to manage
+            You have no task in this section.
           </span>
         </div>
       </div>
@@ -24,7 +24,6 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import TodoItem from './TodoItem.vue';
-import TodoNewModal from './TodoNewModal.vue';
 
 export default {
   name: 'TodoList',
@@ -36,7 +35,6 @@ export default {
   },
   components: {
     TodoItem,
-    TodoNewModal,
   },
   methods: {
     ...mapActions(['getAllTodos']),

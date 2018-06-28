@@ -17,11 +17,12 @@ exports.verifyToken = (req, res, next) => {
 };
 
 exports.authorizeUser = async (req, res, next) => {
-  const user = await jwt.verify(req.token, process.env.SECRET_KEY);
-
-  if (!user) res.status(400).json({ message: 'Invalid Token' });
-  
-  req.user = user;
-
-  next();
+  try {
+    const user = await jwt.verify(req.token, process.env.SECRET_KEY);
+    if (!user) res.status(400).json({ message: 'Invalid Token' });
+    req.user = user;
+    next();
+  } catch (e) {
+    res.status(400).json({ message: 'Invalid Token' });
+  }
 };

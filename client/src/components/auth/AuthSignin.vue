@@ -63,10 +63,18 @@ export default {
   methods: {
     ...mapActions(['authenticateFb', 'signIn']),
     submitSignIn() {
-      this.signIn({
-        username: this.user.username,
-        password: this.user.password,
-      });
+      if (this.user.username.trim() === '' || this.user.password.trim() === '') {
+        this.$toast.open({
+          duration: 3000,
+          message: 'Username or Password cannot be empty',
+          type: 'is-danger',
+        });
+      } else {
+        this.signIn({
+          username: this.user.username,
+          password: this.user.password,
+        });
+      }
     },
   },
 };

@@ -12,7 +12,10 @@
       </div>
 
       <b-field label="Username">
-          <b-input placeholder="Username" v-model="userData.username"></b-input>
+          <b-input
+          placeholder="Username"
+          v-model="userData.username"
+          minLength="6"></b-input>
       </b-field>
 
       <b-field label="Email">
@@ -27,6 +30,7 @@
         <b-input type="password"
             placeholder="Password"
             v-model="userData.password"
+            minLength="6"
         >
         </b-input>
       </b-field>
@@ -54,6 +58,7 @@
 import axios from 'axios';
 
 export default {
+  name: 'AuthSignup',
   data() {
     return {
       userData: {
@@ -65,21 +70,45 @@ export default {
       status: '',
     };
   },
+  computed: {
+    isAnyFieldEmpty() {
+      const props = Object.keys(this.userData);
+      const empty = props.some(data => this.userData[data].trim() === '');
+      return empty;
+    },
+  },
   methods: {
     goBack() {
       this.$router.go(-1);
     },
     signUp() {
-      const vm = this;
-      this.status = 'is-loading';
-      axios.post('http://localhost:3000/api/signup', this.userData)
-        .then((result) => {
-          if (result.status === 200) {
-            this.status = '';
-            vm.$router.push({ name: 'signin' });
-          }
-        })
-        .catch(err => console.log(err.response));
+      if (this.isAnyFieldEmpty) {
+        this.$toast.open({
+          duration: 3000,
+          message: 'Fields cannot be empty',
+          type: 'is-danger',
+        });
+      } else {
+        const vm = this;
+        this.status = 'is-loading';
+        axios.post('http://localhost:3000/api/signup', this.userData)
+          .then((result) => {
+            if (result.status === 200) {
+              this.status = '';
+              vm.$router.push({ name: 'signin' });
+            }
+          })
+          .catch((err) => {
+            if (err) {
+              this.$toast.open({
+                duration: 3000,
+                message: 'Sign up failed',
+                type: 'is-danger',
+              });
+              this.status = '';
+            }
+          });
+      }
     },
   },
 };

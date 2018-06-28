@@ -19,6 +19,10 @@ const mutations = {
   SET_EMAIL(state, email) {
     state.email = email;
   },
+  RESET_USER_STATE(state) {
+    state.username = '';
+    state.email = '';
+  },
 };
 
 const actions = {

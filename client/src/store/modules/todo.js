@@ -1,17 +1,67 @@
 /* eslint no-shadow: ["error", { "allow": ["state"] }] */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-underscore-dangle */
+/* eslint-disable no-shadow */
 
 import axios from 'axios';
+import moment from 'moment';
 
 const state = {
   todos: [],
-  openAddModal: false,
+  openTodoModal: false,
+  mode: 'all',
+  currentTodo: null,
 };
 
 const getters = {
-  todos: state => state.todos,
-  isAddModalOpened: state => state.openAddModal,
+  todos: (state, getters) => {
+    const { mode } = getters;
+    let returnedTodos;
+    switch (mode) {
+      case ('today'): {
+        const today = moment();
+        returnedTodos = state.todos.filter((todo) => {
+          const deadline = moment(todo.deadline);
+          const diff = deadline.endOf('day').diff(today, 'days');
+          if (diff === 0 && !todo.completed) return true;
+          return false;
+        });
+        break;
+      }
+      case ('tommorow'): {
+        const today = moment();
+        returnedTodos = state.todos.filter((todo) => {
+          const deadline = moment(todo.deadline);
+          const diff = deadline.endOf('day').diff(today, 'days');
+          if (diff === 1 && !todo.completed) return true;
+          return false;
+        });
+        break;
+      }
+      case ('overdue'): {
+        const today = moment();
+        returnedTodos = state.todos.filter((todo) => {
+          const deadline = moment(todo.deadline);
+          const diff = deadline.endOf('day').diff(today, 'days');
+          if (diff < 0 && !todo.completed) return true;
+          return false;
+        });
+        break;
+      }
+      case ('completed'): {
+        returnedTodos = state.todos.filter(todo => todo.completed);
+        break;
+      }
+      default: {
+        returnedTodos = state.todos.filter(todo => !todo.completed);
+      }
+    }
+
+    return returnedTodos;
+  },
+  isTodoModalOpened: state => state.openTodoModal,
+  mode: state => state.mode,
+  currentTodo: state => state.currentTodo,
 };
 
 const mutations = {
@@ -31,10 +81,21 @@ const mutations = {
     });
   },
   SHOW_MODAL(state) {
-    state.openAddModal = true;
+    state.openTodoModal = true;
   },
   CLOSE_MODAL(state) {
-    state.openAddModal = false;
+    state.openTodoModal = false;
+  },
+  CHANGE_MODE(state, mode) {
+    state.mode = mode;
+  },
+  RESET_TODO_STATE(state) {
+    state.openTodoModal = false;
+    state.todos = [];
+    state.mode = 'all';
+  },
+  SET_CURRENT_TODO(state, todo) {
+    state.currentTodo = todo;
   },
 };
 
@@ -77,12 +138,33 @@ const actions = {
     });
     commit('DELETE_TODO', data.deletedTodo._id);
   },
-  updateTodo() {},
-  openAddModal({ commit }) {
+  async updateTodo({ commit, rootState }, todoData) {
+    const updatedData = {
+      content: todoData.content,
+      deadline: todoData.deadline,
+    };
+
+    const { token } = rootState.auth;
+    const { data } = await axios.put(`http://localhost:3000/api/todos/${todoData.id}`, updatedData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    commit('UPDATE_TODO', data.todo);
+  },
+  openTodoModal({ commit }) {
     commit('SHOW_MODAL');
   },
-  closeAddModal({ commit }) {
+  closeTodoModal({ commit }) {
     commit('CLOSE_MODAL');
+    commit('SET_CURRENT_TODO', null);
+  },
+  changeTodoFilterMode({ commit }, mode) {
+    commit('CHANGE_MODE', mode);
+  },
+  setCurrentTodo({ commit }, todo) {
+    commit('SET_CURRENT_TODO', todo);
   },
 };
 

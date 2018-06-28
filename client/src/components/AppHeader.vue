@@ -21,7 +21,7 @@
     <div class="navbar-menu" v-if="isLoggedIn" :class="{ 'is-active': isBurgerActive}">
       <div class="navbar-end">
         <div class="navbar-item">
-          <button @click="openAddModal" class="button is-primary">
+          <button @click="openTodoModal" class="button is-primary">
             <b-icon icon="library-plus"></b-icon>
             <span>Add Todo</span>
           </button>
@@ -60,18 +60,19 @@ export default {
     ...mapGetters(['isLoggedIn', 'username', 'email']),
   },
   methods: {
-    ...mapActions(['signOut', 'getUserInfo', 'openAddModal']),
+    ...mapActions(['signOut', 'getUserInfo', 'openTodoModal']),
     submitSignOut() {
       this.isBurgerActive = false;
       this.signOut();
     },
   },
   created() {
-    this.getUserInfo();
+    if (this.$route.name !== 'signin' && this.$route.name !== 'signup') {
+      this.getUserInfo();
+    }
   },
 };
 </script>
 
 <style lang="scss">
-
 </style>

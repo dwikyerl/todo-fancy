@@ -6,7 +6,7 @@
           v-for="(listMode, index) in modes"
           :class="{ 'is-active': mode === listMode.type }"
           :key="index"
-          @click="mode = listMode.type"
+          @click="() => changeTodoFilterMode(listMode.type)"
         >
           <a>{{ listMode.name }}</a>
         </li>
@@ -15,7 +15,7 @@
     <div class="section">
       <div class="container">
         <div class="columns is-centered">
-          <TodoList :mode="mode"></TodoList>
+          <TodoList></TodoList>
         </div>
       </div>
     </div>
@@ -23,13 +23,13 @@
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex';
 import TodoList from './../components/todo/TodoList.vue';
 
 export default {
   name: 'Dashboard',
   data() {
     return {
-      mode: 'all',
       modes: [
         {
           type: 'all',
@@ -56,6 +56,15 @@ export default {
   },
   components: {
     TodoList,
+  },
+  computed: {
+    ...mapGetters(['mode']),
+  },
+  methods: {
+    ...mapActions(['changeTodoFilterMode']),
+    changeMode(mode) {
+      this.changeTodoFilterMode(mode);
+    },
   },
 };
 </script>
