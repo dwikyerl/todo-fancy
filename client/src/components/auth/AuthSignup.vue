@@ -55,7 +55,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from '@/axios';
 
 export default {
   name: 'AuthSignup',
@@ -91,7 +91,7 @@ export default {
       } else {
         const vm = this;
         this.status = 'is-loading';
-        axios.post('http://localhost:3000/api/signup', this.userData)
+        axios.post('/signup', this.userData)
           .then((result) => {
             if (result.status === 200) {
               this.status = '';
