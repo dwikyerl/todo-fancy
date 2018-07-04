@@ -58,14 +58,19 @@ export default {
     TodoList,
   },
   computed: {
-    ...mapGetters(['mode']),
+    ...mapGetters(['mode', 'isLoggedIn']),
   },
   methods: {
-    ...mapActions(['changeTodoFilterMode']),
+    ...mapActions(['changeTodoFilterMode', 'getUserInfo']),
     changeMode(mode) {
       this.changeTodoFilterMode(mode);
     },
   },
+  created () {
+    if (this.isLoggedIn) {
+      this.getUserInfo()
+    }
+  }
 };
 </script>
 

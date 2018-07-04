@@ -1,11 +1,22 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import Home from './views/Home.vue';
-import Dashboard from './views/Dashboard.vue';
 import AuthSignin from './components/auth/AuthSignin.vue';
 import AuthSignup from './components/auth/AuthSignup.vue';
 
 import store from './store/index';
+
+const Home = (resolve) => {
+  require.ensure(['./views/Home.vue'], () => {
+    resolve(require('./views/Home.vue'));
+  }, 'home');
+};
+
+const Dashboard = (resolve) => {
+  require.ensure(['./views/Dashboard.vue'], () => {
+    resolve(require('./views/Dashboard.vue'));
+  }, 'dashboard');
+};
+
 
 Vue.use(Router);
 
