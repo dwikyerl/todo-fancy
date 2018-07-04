@@ -51,7 +51,7 @@ exports.fbSignin = async (req, res) => {
       email: data.email
     };
 
-    user = User.create(signUpData);
+    user = await User.create(signUpData);
   }
 
   const token = await jwt.sign(
