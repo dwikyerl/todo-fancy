@@ -13,7 +13,7 @@ exports.signin = async (req, res) => {
     });
   }
   
-  const match = user.matchPassword(req.body.password);
+  const match = await user.matchPassword(req.body.password);
   if (match) {
     const token = await jwt.sign(
       {

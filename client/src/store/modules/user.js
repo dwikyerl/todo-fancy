@@ -1,6 +1,6 @@
 /* eslint no-shadow: ["error", { "allow": ["state"] }] */
 /* eslint-disable no-param-reassign */
-import axios from 'axios';
+import axios from '@/axios';
 
 const state = {
   username: '',
@@ -26,13 +26,8 @@ const mutations = {
 };
 
 const actions = {
-  async getUserInfo({ rootState, commit }) {
-    const { token } = rootState.auth;
-    const { data } = await axios.get('http://localhost:3000/api/me', {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+  async getUserInfo({ commit }) {
+    const { data } = await axios.get('/me');
     commit('SET_USERNAME', data.user.username);
     commit('SET_EMAIL', data.user.email);
   },

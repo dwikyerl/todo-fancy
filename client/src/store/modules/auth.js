@@ -2,8 +2,8 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-underscore-dangle */
 import firebase from 'firebase/app';
-import axios from 'axios';
 import 'firebase/auth';
+import axios from '@/axios';
 import firebaseApp from './../../firebase';
 import router from './../../router';
 
@@ -31,14 +31,19 @@ const actions = {
   },
   async signIn({ commit, dispatch }, user) {
     try {
-      const { data } = await axios.post('http://localhost:3000/api/signin', user);
+      const { data } = await axios.post('/signin', user);
       commit('SET_TOKEN', data.token);
       window.localStorage.setItem('token', data.token);
       await dispatch('getUserInfo', null, { root: true });
+      this._vm.$toast.open({
+        duration: 1000,
+        message: data.message,
+        type: 'is-success',
+      });
       router.push({ name: 'dashboard' });
     } catch (e) {
       this._vm.$toast.open({
-        duration: 3000,
+        duration: 2000,
         message: e.response.data.message,
         type: 'is-danger',
       });
@@ -47,10 +52,15 @@ const actions = {
   },
   async fbSignin({ commit, dispatch }, accessToken) {
     try {
-      const { data } = await axios.post('http://localhost:3000/api/fbSignin', { accessToken });
+      const { data } = await axios.post('/fbSignin', { accessToken });
       commit('SET_TOKEN', data.token);
       window.localStorage.setItem('token', data.token);
       await dispatch('getUserInfo', null, { root: true });
+      this._vm.$toast.open({
+        duration: 1000,
+        message: data.message,
+        type: 'is-success',
+      });
       router.push({ name: 'dashboard' });
     } catch (e) {
       console.log(e.response);
