@@ -95,6 +95,11 @@ export default {
           .then((result) => {
             if (result.status === 200) {
               this.status = '';
+              this.$toast.open({
+                duration: 1000,
+                message: result.data.message,
+                type: 'is-info',
+              });
               vm.$router.push({ name: 'signin' });
             }
           })

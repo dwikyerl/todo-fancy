@@ -3,7 +3,7 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable no-shadow */
 
-import axios from 'axios';
+import axios from '@/axios';
 import moment from 'moment';
 
 const state = {
@@ -100,56 +100,31 @@ const mutations = {
 };
 
 const actions = {
-  async getAllTodos({ commit, rootState }) {
-    const { token } = rootState.auth;
-    const { data } = await axios.get('http://localhost:3000/api/todos', {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+  async getAllTodos({ commit }) {
+    const { data } = await axios.get('/todos');
 
     commit('SET_TODOS', data.todos);
   },
-  async addNewTodo({ commit, rootState }, newTodo) {
-    const { token } = rootState.auth;
-    const { data } = await axios.post('http://localhost:3000/api/todos', newTodo, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+  async addNewTodo({ commit }, newTodo) {
+    const { data } = await axios.post('/todos', newTodo);
 
     commit('ADD_TODO', data.todo);
   },
-  async completeTodo({ commit, rootState }, { todoId, completed }) {
-    const { token } = rootState.auth;
-    const { data } = await axios.put(`http://localhost:3000/api/todos/${todoId}`, { completed }, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+  async completeTodo({ commit }, { todoId, completed }) {
+    const { data } = await axios.put(`/todos/${todoId}`, { completed });
     commit('UPDATE_TODO', data.todo);
   },
-  async deleteTodo({ commit, rootState }, todoId) {
-    const { token } = rootState.auth;
-    const { data } = await axios.delete(`http://localhost:3000/api/todos/${todoId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+  async deleteTodo({ commit }, todoId) {
+    const { data } = await axios.delete(`/todos/${todoId}`);
     commit('DELETE_TODO', data.deletedTodo._id);
   },
-  async updateTodo({ commit, rootState }, todoData) {
+  async updateTodo({ commit }, todoData) {
     const updatedData = {
       content: todoData.content,
       deadline: todoData.deadline,
     };
 
-    const { token } = rootState.auth;
-    const { data } = await axios.put(`http://localhost:3000/api/todos/${todoData.id}`, updatedData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const { data } = await axios.put(`/todos/${todoData.id}`, updatedData);
 
     commit('UPDATE_TODO', data.todo);
   },
