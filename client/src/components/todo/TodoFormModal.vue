@@ -72,6 +72,13 @@ export default {
   methods: {
     ...mapActions(['closeTodoModal', 'addNewTodo', 'updateTodo']),
     submitTodo() {
+      if (this.content.trim() === '') {
+        return this.$toast.open({
+          duration: 1000,
+          message: 'Content cannot be empty',
+          type: 'is-danger',
+        });
+      }
       const todoData = {
         content: this.content,
         deadline: this.date,
