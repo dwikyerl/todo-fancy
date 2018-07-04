@@ -73,11 +73,11 @@ export default {
     ...mapActions(['closeTodoModal', 'addNewTodo', 'updateTodo']),
     submitTodo() {
       const todoData = {
-        id: this.currentTodo._id,
         content: this.content,
         deadline: this.date,
       };
       if (this.currentTodo) {
+        todoData.id = this.currentTodo._id;
         this.updateTodo(todoData);
       } else {
         this.addNewTodo(todoData);
