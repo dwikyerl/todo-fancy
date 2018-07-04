@@ -65,12 +65,7 @@ export default {
       this.isBurgerActive = false;
       this.signOut();
     },
-  },
-  created() {
-    if (this.$route.name !== 'signin' && this.$route.name !== 'signup') {
-      this.getUserInfo();
-    }
-  },
+  }
 };
 </script>
 
