@@ -8,7 +8,9 @@ const errorHandlers = require('./handlers/errorHandlers');
 
 const app = express();
 
-const options = {};
+const options = {
+  autoReconnect: true
+};
 if (process.env.DB_USER === 'admin') {
   options.user = process.env.DB_USER;
   options.pass = process.env.DB_PASSWORD;
